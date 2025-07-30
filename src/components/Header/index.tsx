@@ -2,7 +2,7 @@ import {MessageSquare} from "lucide-react";
 
 const Header = () => {
     return (
-        <div>
+        <header>
 
           <div className="p-3 bg-dark-bg-secondary w-fit rounded-xl">
               <MessageSquare size={32} className="stroke-dark-text-primary fill-dark-text-primary" />
@@ -14,7 +14,7 @@ const Header = () => {
                 <p className="font-normal text-3xl text-dark-text-secondary whitespace-pre-line">Use one of the most common prompts bellow {"\n"} or ask your own question</p>
             </div>
 
-        </div>
+        </header>
     );
 };
 

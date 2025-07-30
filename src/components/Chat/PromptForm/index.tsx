@@ -26,40 +26,42 @@ const PromptForm: FC<PromptFormProps> = ({isAnswerLoading, setIsAnswerLoading}) 
     const startSpeechRecognition = () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-        if (SpeechRecognition) {
-            setIsListening(true);
-            const recognition = new SpeechRecognition();
-            recognitionRef.current = recognition;
-
-            recognition.lang = 'ru-RU';
-            recognition.interimResults = true;
-            recognition.continuous = false;
-
-            recognition.onresult = (event: SpeechRecognitionEvent) => {
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    const transcript = event.results[i][0].transcript;
-                        setValue('prompt', getValues('prompt') + transcript);
-                }
-            };
-
-            recognition.onerror = () => {
-                setIsListening(false);
-            };
-
-            recognition.onend = () => {
-                setIsListening(false);
-            };
-
-            recognition.start();
-
-        } else {
+        if (!SpeechRecognition) {
             alert('Ваш браузер не поддерживает Web Speech API (Speech Recognition).');
+
+            return;
         }
+
+        setIsListening(true);
+        const recognition = new SpeechRecognition();
+        recognitionRef.current = recognition;
+
+        recognition.lang = 'ru-RU';
+        recognition.interimResults = false;
+        recognition.continuous = false;
+
+        recognition.onresult = (event: SpeechRecognitionEvent) => {
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                const transcript = event.results[i][0].transcript;
+                console.log(transcript)
+                setValue('prompt', getValues('prompt') + transcript);
+            }
+        };
+
+        recognition.onerror = () => {
+            setIsListening(false);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+
+        recognition.start();
     }
 
     const stopListening = () => {
         if (recognitionRef?.current) {
-            (recognitionRef.current as {stop: () => void}).stop();
+            (recognitionRef.current as { stop: () => void }).stop();
             setIsListening(false);
         }
     }
@@ -71,6 +73,7 @@ const PromptForm: FC<PromptFormProps> = ({isAnswerLoading, setIsAnswerLoading}) 
             type: EnumChatMessageType.USER,
             message: values.prompt,
         })
+
         try {
             const res = await getAnswer(values);
 
@@ -79,17 +82,12 @@ const PromptForm: FC<PromptFormProps> = ({isAnswerLoading, setIsAnswerLoading}) 
                 message: res.answer,
             })
         } catch (error: unknown) {
-            if (error instanceof Error) {
-                chatMessagesReducer({
-                    type: EnumChatMessageType.ERROR,
-                    message: error.message,
-                });
-            } else {
-                chatMessagesReducer({
-                    type: EnumChatMessageType.ERROR,
-                    message: 'Something went wrong',
-                });
-            }
+            const errMessage = (error instanceof Error) ? error.message : 'Something went wrong'
+
+            chatMessagesReducer({
+                type: EnumChatMessageType.ERROR,
+                message: errMessage,
+            });
         }
 
         setIsAnswerLoading(false)
@@ -100,7 +98,7 @@ const PromptForm: FC<PromptFormProps> = ({isAnswerLoading, setIsAnswerLoading}) 
     return (
         <form onSubmit={onSubmit}
               className="flex max-w-[30%] w-full h-fit bg-transparent rounded-xl border-3 border-dark-border sticky">
-            <button onClick={isListening ? stopListening : startSpeechRecognition} className="p-2 cursor-pointer">
+            <button type="button" onClick={isListening ? stopListening : startSpeechRecognition} className="p-2 cursor-pointer">
                 {
                     isListening ? (
                         <Circle size={24} className="fill-dark-bg-secondary"/>

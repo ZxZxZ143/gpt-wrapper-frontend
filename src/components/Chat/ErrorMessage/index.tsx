@@ -1,12 +1,16 @@
-import {FC, PropsWithChildren} from "react";
+import {FC} from "react";
 import {Alert, AlertTitle} from "@/components/ui/alert";
 import {AlertCircleIcon} from "lucide-react";
 
-const ErrorMessage: FC<PropsWithChildren> = ({children}) => {
+type ErrorMessageProps = {
+    message: string;
+}
+
+const ErrorMessage: FC<ErrorMessageProps> = ({message}) => {
     return (
         <Alert variant="destructive" className="max-w-[30%] self-start whitespace-pre-line">
             <AlertCircleIcon />
-            <AlertTitle>{children}</AlertTitle>
+            <AlertTitle>{message}</AlertTitle>
         </Alert>
     );
 };

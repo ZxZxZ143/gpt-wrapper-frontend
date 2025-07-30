@@ -1,10 +1,14 @@
-import {FC, PropsWithChildren} from "react";
+import {FC} from "react";
 
-const UserMessage:FC<PropsWithChildren> = ({children}) => {
+type UserMessageProps = {
+    message: string;
+}
+
+const UserMessage:FC<UserMessageProps> = ({message}) => {
     return (
         <div className="max-w-[70%] bg-dark-bg-secondary p-2 rounded-2xl rounded-br-xs self-end whitespace-pre-line">
             <p>
-                {children ?? 'ошибка загрузки вопроса'}
+                {message ?? 'ошибка загрузки вопроса'}
             </p>
         </div>
     );
