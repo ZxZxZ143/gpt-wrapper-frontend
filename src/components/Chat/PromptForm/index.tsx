@@ -43,7 +43,6 @@ const PromptForm: FC<PromptFormProps> = ({isAnswerLoading, setIsAnswerLoading}) 
         recognition.onresult = (event: SpeechRecognitionEvent) => {
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 const transcript = event.results[i][0].transcript;
-                console.log(transcript)
                 setValue('prompt', getValues('prompt') + transcript);
             }
         };
@@ -97,7 +96,7 @@ const PromptForm: FC<PromptFormProps> = ({isAnswerLoading, setIsAnswerLoading}) 
     })
     return (
         <form onSubmit={onSubmit}
-              className="flex max-w-[30%] w-full h-fit bg-transparent rounded-xl border-3 border-dark-border sticky">
+              className="flex items-stretch lg:max-w-[30%] sm:max-w-[50%] max-w-[95%] w-full h-fit bg-transparent rounded-xl border-3 border-dark-border">
             <button type="button" onClick={isListening ? stopListening : startSpeechRecognition} className="p-2 cursor-pointer">
                 {
                     isListening ? (
@@ -122,7 +121,7 @@ const PromptForm: FC<PromptFormProps> = ({isAnswerLoading, setIsAnswerLoading}) 
 
             <button
                 type="submit"
-                className="p-2 rounded-[12px] w-fit cursor-pointer h-full transition bg-dark-bg-secondary hover:bg-dark-text-secondary disabled:pointer-events-none disabled:bg-dark-text-secondary disabled:cursor-alias"
+                className="px-2 rounded-[12px] w-fit cursor-pointer transition bg-dark-bg-secondary hover:bg-dark-text-secondary disabled:pointer-events-none disabled:bg-dark-text-secondary disabled:cursor-alias"
                 disabled={isAnswerLoading}
             >
                 <ChevronRight size={24} className="stroke-2"/>
